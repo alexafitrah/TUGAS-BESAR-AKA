@@ -1,0 +1,102 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+// Fungsi untuk menghitung biaya perjalanan
+int hitungBiayaPerjalanan(int jarak, int pilihan) {
+    if (pilihan == 1) { // 1 untuk delivery
+        return jarak * 4000;
+    } else { // 0 untuk beli sendiri
+        return jarak * 2500;
+    }
+}
+
+// Fungsi Iteratif untuk menentukan keputusan apakah masak sendiri atau beli makanan jadi
+void putuskanMakanIteratif(int anggaran, int biayaMasak, int biayaBeli, int jarak, int pilihan, int n) {
+    for (int i = 0; i < n; ++i) { // Perulangan untuk n kasus
+        int biayaPerjalanan = hitungBiayaPerjalanan(jarak, pilihan);
+        int totalBiayaBeli = biayaBeli + biayaPerjalanan;
+
+        // Kondisi jika anggaran tidak cukup
+        if ((anggaran < biayaMasak) && (anggaran < totalBiayaBeli)) {
+            cout << "Anggaran tidak mencukupi pada kasus ke-" << i+1 << ".\n";
+            return;
+        }
+
+        // Keputusan menggunakan iterasi
+        if (anggaran >= totalBiayaBeli && totalBiayaBeli <= biayaMasak) {
+            if (pilihan == 1) {
+                cout << "Beli makanan jadi (delivery) pada kasus ke-" << i+1 << " karena biaya beli makanan jadi (" << totalBiayaBeli << ") lebih murah dari masak sendiri (" << biayaMasak << ").\n";
+            } else {
+                cout << "Beli makanan jadi (sendiri) pada kasus ke-" << i+1 << " karena biaya beli makanan jadi (" << totalBiayaBeli << ") lebih murah dari masak sendiri (" << biayaMasak << ").\n";
+            }
+        } else {
+            cout << "Masak sendiri pada kasus ke-" << i+1 << " karena biaya masak sendiri (" << biayaMasak << ") lebih murah dari beli makanan jadi (" << totalBiayaBeli << ").\n";
+        }
+    }
+}
+
+// Fungsi Rekursif untuk menentukan keputusan apakah masak sendiri atau beli makanan jadi
+void putuskanMakanRekursif(int anggaran, int biayaMasak, int biayaBeli, int jarak, int pilihan, int n, int i = 0) {
+    if (i >= n) return; // Base case: selesai jika sudah mencapai n iterasi
+
+    int biayaPerjalanan = hitungBiayaPerjalanan(jarak, pilihan);
+    int totalBiayaBeli = biayaBeli + biayaPerjalanan;
+
+    // Kondisi jika anggaran tidak cukup
+    if ((anggaran < biayaMasak) && (anggaran < totalBiayaBeli)) {
+        cout << "Anggaran tidak mencukupi pada kasus ke-" << i+1 << ".\n";
+        return;
+    }
+
+    // Keputusan menggunakan rekursi
+    if (anggaran >= totalBiayaBeli && totalBiayaBeli <= biayaMasak) {
+        if (pilihan == 1) {
+            cout << "Beli makanan jadi (delivery) pada kasus ke-" << i+1 << " karena biaya beli makanan jadi (" << totalBiayaBeli << ") lebih murah dari masak sendiri (" << biayaMasak << ").\n";
+        } else {
+            cout << "Beli makanan jadi (sendiri) pada kasus ke-" << i+1 << " karena biaya beli makanan jadi (" << totalBiayaBeli << ") lebih murah dari masak sendiri (" << biayaMasak << ").\n";
+        }
+    } else {
+        cout << "Masak sendiri pada kasus ke-" << i+1 << " karena biaya masak sendiri (" << biayaMasak << ") lebih murah dari beli makanan jadi (" << totalBiayaBeli << ").\n";
+    }
+
+    // Pemanggilan rekursif untuk kasus berikutnya
+    putuskanMakanRekursif(anggaran, biayaMasak, biayaBeli, jarak, pilihan, n, i + 1);
+}
+
+// Aplikasi Utama
+int main() {
+    int jumlahKasus;
+
+    cout << "Masukkan jumlah kasus yang ingin diproses: ";
+    cin >> jumlahKasus;
+
+    for (int k = 1; k <= jumlahKasus; ++k) {
+        int anggaran, biayaMasak, biayaBeli, jarak, pilihan;
+
+        cout << "\nMasukkan anggaran untuk kasus ke-" << k << ": ";
+        cin >> anggaran;
+
+        cout << "Masukkan biaya untuk memasak sendiri (kasus ke-" << k << "): ";
+        cin >> biayaMasak;
+
+        cout << "Masukkan biaya untuk membeli makanan jadi (kasus ke-" << k << "): ";
+        cin >> biayaBeli;
+
+        cout << "Masukkan jarak ke tempat membeli makanan (km, kasus ke-" << k << "): ";
+        cin >> jarak;
+
+        cout << "Pilih opsi pembelian makanan jadi (1 untuk delivery, 0 untuk beli sendiri, kasus ke-" << k << "): ";
+        cin >> pilihan;
+
+        // Keputusan untuk kasus ke-k menggunakan algoritma Iteratif
+        cout << "\n--- Keputusan Kasus ke-" << k << " Menggunakan Algoritma Iteratif ---\n";
+        putuskanMakanIteratif(anggaran, biayaMasak, biayaBeli, jarak, pilihan, 1);
+
+        // Keputusan untuk kasus ke-k menggunakan algoritma Rekursif
+        cout << "\n--- Keputusan Kasus ke-" << k << " Menggunakan Algoritma Rekursif ---\n";
+        putuskanMakanRekursif(anggaran, biayaMasak, biayaBeli, jarak, pilihan, 1);
+    }
+
+    return 0;
+}
